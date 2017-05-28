@@ -4,22 +4,22 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,fig.width=7, fig.height=3)
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,fig.width=4, fig.height=2)
   library(papaja)
 library(tidyverse)
 library(MASS) #for simulating multivariate normal distribution with mvrnorm
 ```
 
 
-##The [tl;dr](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) version
+###The [tl;dr](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) version
 A neuroimaging measure is potentially useful for individual differences research if variation between people is substantially greater than variation within the same person tested on different occasions. This means that we need to know about the **reliability** of our measures, before launching into studies of individual differences.
 
 High reliability is not *sufficient* to ensure a good measure, but it is *necessary*.
 
-## Individual differences research
+### Individual differences research
 Psychologists have used behavioural measures to study individual differences - in cognition and personality - for many years. The goal is complementary to psychological research that looks for universal principles that guide human behaviour: e.g. factors affecting learning or emotional reactions.  Individual differences research also often focuses on underlying causes, looking for associations with genetic, experiential and/or neurobiological differences that could lead to individual differences.
 
-## Some basic psychometrics
+### Some basic psychometrics
 Suppose I set up a study to assess individual differences in children's vocabulary. I decide to look at three measures. 
 
 + Measure A involves asking children to define a predetermined set of words, ordered in difficulty, and scoring their responses by standard criteria. 
@@ -31,7 +31,7 @@ For each of these measures, we'd expect to see a distribution of scores, so we c
 
 
 
-```{r testplots, fig.height = 3, fig.width = 7}
+```{r testplots, fig.height = 2, fig.width = 4}
 #add this bit to line above once it is done: , echo=FALSE 
 myN <- 200
 mysigma <- matrix(c(1,.5,.2,
@@ -61,7 +61,7 @@ mytib1$Test <- as.factor(mytib1$Test)
 levels(mytib1$Test) <- c('Test A','Test B','Test C')
 ```
 
-```{r fig1, fig.height = 3, fig.width = 7}
+```{r fig1, fig.height = 2, fig.width = 4}
 ggplot(data=mytib1, aes(mytib1$Score)) + 
   geom_histogram()+
   facet_wrap(~Test,nrow=1)+
@@ -78,7 +78,7 @@ There is a huge literature addressing this issue, starting with Francis Galton i
 If there is a big influence of random error, then the test score is likely to change from one occasion to the next. Suppose we measure the same children on two occasions a month apart on three new three tests, and then plot scores on time 1 vs time 2. (To simplify this example, we assume that all three tests have the same normal distribution of scores - the same as for test A in Figure 1, and there is an average gain of 10 points from time 1 to time 2).
 
 
-```{r corrplots, fig.height = 3, fig.width = 7}
+```{r corrplots, fig.height = 2, fig.width = 4}
 #We'll now add random error to A, B and C , at different levels to reflect different reliability
 myrands <- rnorm((myN*3),10,30) #assume 10 point increase over time
 myrands[1:myN] <- myrands[1:myN]/3 #low level of random error
@@ -126,22 +126,23 @@ Just because a test is reliable, it does not mean it is valid. But if it is not 
 ![Reliability and validity](/Users/dorothybishop/bishopblog_repo/reliable valid png.png). 
 
 
-## What about change scores?
+### What about change scores?
 Sometimes we explicitly want to measure change: for instance, we may be more interested in how quickly a child learns vocabulary, rather than how much they know at some specific point in time. Surely, then, we don't want a stable measure, as it would not identify the change? Wouldn't test F be better than D or E for this purpose?
 
 Unfortunately, the logic here is flawed. It's certainly possible that people may vary in how much they change from time to time, but if our interest is in change, then what we want is a reliable measure of change. There has been considerable debate in the psychological literature as to how best to establish the reliability of a change measure, but the key point is that you can find substantial change in test scores that is meaningless, and that the likelihood of it being meaningless is substantial if the underlying measure is unreliable. The data in Figure 2 were simulated by assuming that all children changed by the same amount from Time 1 to Time 2, but that tests varied in how much random error was incorporated in the test score. If you want to interpret a change score as meaningful, then the onus is on you to convince others that you are not just measuring random error.
 
-## What does this have to do with neuroimaging?
+### What does this have to do with neuroimaging?
 My concern with the neuroimaging literature, is that measures from functional or structural imaging are often used to measure individual differences, but it is rare to find any mention of reliability of those measures. In most cases, we simply don't have any data on repeated testing using the same measures - or if we do, the sample size is too small, or [too selected](http://deevybee.blogspot.co.uk/2017/04/sample-selection-in-genetic-studies.html), to give a meaningful estimate of reliability. Such data as we have don't inspire confidence that brain measurements achieve high level of reliability that is aimed for in psychometric tests. This does not mean that these measures are not useful, but it does make them unsuited for the study of individual differences.
 
 I hesitated about blogging on this topic, because nothing I am saying here is new: the importance of reliability has been established in the literature on measurement theory since 1950. Yet, when different subject areas evolve independently, it seems that methodological practices that are seen as crucial in one discipline can be overlooked in another that is rediscovering the same issues but with different metrics.
 
 There are signs that things are changing, and we are seeing a welcome trend for neuroscientists to start taking reliability seriously. I started thinking about blogging on this topic just a couple of weeks ago after seeing some high-profile papers that exemplified the problems in this area, but in that period, there have also been some nice studies that are starting to provide information on reliability of neuroscience measures. This might seem like relatively dull science to many, but to my mind it is a key step towards incorporating neuroscience in the study of individual differences. As I commented on Twitter recently, my view is that anyone who wants to using a neuroimaging measure as an endophenotype should first be required to establish that it has adequate reliability for that purpose.
 
-#Further reading
+###Further reading
 This review by [Dubois and Adolphs (2016)](http://www.sciencedirect.com/science/article/pii/S1364661316300079) covers the issue of reliability and much more, and is highly recommended.
 
-#Other recent papers of relevance:
+Other recent papers of relevance:
+
 [Geerligs, L., Tsvetanov, K. A., Cam-CAN, Henson, R. N. 2017 Challenges in measuring individual differences in functional connectivity using fMRI: The case of healthy aging. Human Brain Mapping](http://onlinelibrary.wiley.com/doi/10.1002/hbm.23653/full)
 
 [Nord, C. L., Gray, A., Charpentier, C. J., Robinson, O. J., Roiser, J. P. 2017 Unreliability of putative fMRI biomarkers during emotional face processing.Neuroimage.](https://doi.org/10.1016/j.neuroimage.2017.05.024)
