@@ -1,0 +1,80 @@
+---
+title: "Which neuroimaging measures are useful for individual differences research?"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+  library(papaja)
+library(tidyverse)
+library(MASS) #for simulating multivariate normal distribution with mvrnorm
+
+```
+
+## The [tl;dr](https://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn%27t_read) version
+A neuroimaging measure is potentially useful for individual differences research if variation between people is substantially greater than variation within the same person tested on different occasions. This means that we need to know about the **reliability** of our measures, before launching into studies of individual differences.
+
+High reliability is not *sufficient* to ensure a good measure, but it is *necessary*.
+
+## Individual differences research
+Psychologists have used behavioural measures to study individual differences - in cognition and personality - for many years. The goal is complementary to psychological research that looks for universal principles that guide human behaviour: e.g. factors affecting learning or emotional reactions. I will illustrate with an area I work in: language development. Much research on how children learn language focuses on how the input to the child affects what and how they learn. But it is clear that children learn at different rates, and there is considerable interest in identifying why this is so - not least so that children who are having trouble learning can be helped. Individual differences research also often focuses on underlying causes, looking for associations with genetic, experiential and/or neurobiological differences that could lead to individual differences.
+
+## Some basic psychometrics
+Suppose I set up a study to assess individual differences in children's vocabulary. I decide to look at three measures. 
+
++ Measure A is taken from the well-known Wechsler intelligence scales, and involves asking children to define a predetermined set of words, ordered in difficulty, and scoring their responses by standard criteria. 
++ Measure B involves showing the child pictured objects that have to be named. 
++ Measure C involves recording the child talking with another child and measuring how many different words they use. 
+
+For each of these measures, we'd expect to see a distribution of scores, so we could potentially rank order children on their vocabulary ability. But are the three measures equally good indicators of individual differences? 
+
+
+
+
+```{r testplots, echo=FALSE }
+myN <- 200
+mysigma <- matrix(c(1,.5,.2,.5,1,.1,.2,.1,1),nrow=3,byrow=TRUE) #correlation between 3 simulated variables
+mydata <- mvrnorm(n=myN,mu=c(0,0,0),Sigma=mysigma) #make zscores
+mydata1 <- round(100+mydata*15) #convert to variables with mean 100 and SD 15
+colnames(mydata1) <- c('A','B','C')
+mydata2 <- mydata1
+mydata2[,2] <- round(100+mydata[,2]*5)
+mydata2[,3] <- round(100+mydata[,3]*25)
+#mytib1 <- mydata1 %>% #sadly, could not get gather to work here, so used brute force instead
+#  gather('A','B','C',key='task',value='score')
+mytib1 <- matrix(rep(0,myN*9),ncol=3) #initialise tibble format - following lines put right stuff in right place
+mytib1[1:myN,1] <- 1
+mytib1[((myN+1):(2*myN)),1] <-2
+mytib1[((2*myN+1):(3*myN)),1] <- 3
+mytib1[1:myN,2] <- mydata1[,1]
+mytib1[((myN+1):(2*myN)),2] <- mydata1[,2]
+mytib1[((2*myN+1):(3*myN)),2] <- mydata1[,3]
+mytib1[1:myN,3] <- mydata2[,1]
+mytib1[((myN+1):(2*myN)),3] <- mydata2[,2]
+mytib1[((2*myN+1):(3*myN)),3] <- mydata2[,3]
+mytib1 <- as.tibble(mytib1)
+colnames(mytib1) <- c('Test','Score_orig','Score')
+mytib1$Test <- as.factor(mytib1$Test)
+levels(mytib1$Test) <- c('A','B','C')
+
+```{r fig1, fig.height = 3, fig.width = 7, echo=FALSE}
+ggplot(data=mytib1, aes(mytib1$Score)) + 
+  geom_histogram()+
+  facet_wrap(~Test,nrow=1)+
+  xlab("Vocabulary score") +
+  ylab("Frequency") +
+  ggtitle("Simulated data from 3 vocabulary measures")
+
+```
+
+We can see immediately one problem with Test B: the distribution of scores is bunched tightly, so it doesn't capture individual variation very well. Test C, which has the greatest spread of scores, might seem the most suitable for detecting individual variation. But spread of scores, while important, is not the only test attribute to consider. We also need to consider whether the measure assesses a stable individual difference, or whether it is influenced by random or systematic factors that are not part of what we want to measure.
+
+There is a huge literature addressing this issue, starting with Francis Galton in the 19th century, with major statistical advances in the 1950s and 1960s (see review by [Wasserman & Bracken, 2003](https://numerons.files.wordpress.com/2012/04/psychological-measurement-of-individual-differences.pdf)). The classical view treats test scores as a compound, with a 'true score' part, plus an 'error' part. We want a measure that minimises the impact of random or systematic error.
+
+If there is a big influence of random error, then the test score is likely to change from one occasion to the next. Suppose we measure the same children on two occasions a month apart on our three tests, and then plot scores on time 1 vs time 2.
+
+
+## Including Plots
+
+
+
