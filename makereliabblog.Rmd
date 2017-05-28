@@ -8,6 +8,14 @@ knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,fig.width=4, fig.
   library(papaja)
 library(tidyverse)
 library(MASS) #for simulating multivariate normal distribution with mvrnorm
+
+#to upload to Blogger: view the HTML and Open in Browser.
+#Press control+U (or cmd+U) and you will see the html code.
+#Ignore all the stuff at top and bottom, and just locate the bit that looks recognisable
+#as the start of the material you want in the blog, and which starts with a </div>
+#Select that and copy it onto clipboard, all the way down to a matching </div>
+#Don't copy anything with <script> in it.
+#You can then paste the html from clipboard into the html section of Blogger.
 ```
 
 
